@@ -27,6 +27,8 @@ atomCoords=[atom.get_coord() for atom in atoms]
 for index,centralAtom in enumerate(centralCoords):
     inRange=box.buildBox(centralAtom, 5, 1, atomCoords)
     print(index,inRange)
+
+# Don't forget we need to exclude the central atom from the box!
     
 
 ## May want to read Biopython 11.6.4.5 for a more efficient implementation
