@@ -24,6 +24,3 @@ def buildBox(boxSize, boxOrigin, atomCoords, atomNames, pqr, sasa, voxel, channe
             # We have found an atom that is within the box
             print("I've found an atom!", index)
             
-
-def atomBox():
-    print("Nothing here!")
