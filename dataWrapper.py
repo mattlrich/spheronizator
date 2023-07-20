@@ -9,6 +9,7 @@ file='demo.protein.pdw'
 parser=PDBParser()
 structure=parser.get_structure("my very first protein", file)
 
+# Extract Atoms from the structure. We will need to refer back to them later.
 atoms=[]
 centralAtoms=[]
 for residue in structure.get_residues():
@@ -17,8 +18,15 @@ for residue in structure.get_residues():
             if index==0: centralAtoms.append(atom)
             atoms.append(atom)
 
-# Try getting the coordinates of our central atoms
-coordinates=[atom.get_coord() for atom in centralAtoms]
-print(coordinates[0])
+# Extract Coordinates from Atom Objects
+centralCoords=[atom.get_coord() for atom in centralAtoms]
+atomCoords=[atom.get_coord() for atom in atoms]
+#print(centralCoords[0])
+
+# Run box generation algorithm
+for index,centralAtom in enumerate(centralCoords):
+    inRange=box.buildBox(centralAtom, 5, 1, atomCoords)
+    print(index,inRange)
+    
 
 ## May want to read Biopython 11.6.4.5 for a more efficient implementation
