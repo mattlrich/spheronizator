@@ -1,28 +1,46 @@
 import numpy as np
 
 def structureLimits(atomCoords):
-    # Get the ranges of cartesian coordiantes that describe the structure.
+    ''' 
+    Get the upper and lower bounds for every dimension from the given set of coordinates.
+    Used to get the ranges of cartesian coordiantes that describe the entire structure.
+    
+    Output array is in the following format:
+            x y z
+        min . . .
+        max . . .
+        
+    '''
+    
     structureLimits=np.array([
         [np.min(atomCoords[:,dimension]) for dimension in range(0,3)], 
         [np.max(atomCoords[:,dimension]) for dimension in range(0,3)]],
         dtype=np.float32
     )
+    
     return structureLimits
 
-def samplePoints(structureLimits,sampleRate):
+def samplePoints(structureLimits,spacing=1):
+    '''
+    Given boundaries, generate a set of sample points spaced at regular intervals.
+    Currently, we round to the nearest integer.
     
-    if not isinstance(sampleRate, int):
+    Default spacing interval is 1 angstrom
+    
+    '''
+    
+    if not isinstance(spacing, int):
         raise ValueError("sampleRate is not a integer value!")
 
     # Round min and max to the nearest integer
     # Add one (1) sample to the end to include end-point
     structureLimits[0]=np.floor(structureLimits[0])
-    structureLimits[1]=np.ceil(structureLimits[1])+sampleRate
+    structureLimits[1]=np.ceil(structureLimits[1])+spacing
     
     # Generate an array of sample points for each dimension
-    x_points=np.arange(structureLimits[0,0],structureLimits[1,0],sampleRate, dtype=int)
-    y_points=np.arange(structureLimits[0,1],structureLimits[1,1],sampleRate, dtype=int)
-    z_points=np.arange(structureLimits[0,2],structureLimits[1,2],sampleRate, dtype=int)
+    x_points=np.arange(structureLimits[0,0],structureLimits[1,0],spacing, dtype=int)
+    y_points=np.arange(structureLimits[0,1],structureLimits[1,1],spacing, dtype=int)
+    z_points=np.arange(structureLimits[0,2],structureLimits[1,2],spacing, dtype=int)
 
     ''' Use numpy.meshgrid to generate the sample points. Equivalent to the following:
     
@@ -37,7 +55,10 @@ def samplePoints(structureLimits,sampleRate):
     samplePoints=np.column_stack((x, y, z))
     
     return samplePoints
-    
+
+def centralAA():
+    # Function to find the central amino acids
+    pass
         
 def scanRange(origin,delta,size,voxel):
     scanRange=np.zeros((3,size),dtype=int)
