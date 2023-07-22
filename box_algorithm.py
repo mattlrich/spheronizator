@@ -1,5 +1,14 @@
 import numpy as np
 
+def structureLimits(atomCoords):
+    # Get the ranges of cartesian coordiantes that describe the structure.
+    structureLimits=np.array([
+        [np.min(atomCoords[:,dimension]) for dimension in range(0,3)], 
+        [np.max(atomCoords[:,dimension]) for dimension in range(0,3)]],
+        dtype=np.float32
+    )
+    return structureLimits
+
 def scanRange(origin,delta,size,voxel):
     scanRange=np.zeros((3,size),dtype=int)
     for dimension,component in enumerate(boxOrigin):
