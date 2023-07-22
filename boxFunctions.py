@@ -9,6 +9,36 @@ def structureLimits(atomCoords):
     )
     return structureLimits
 
+def samplePoints(structureLimits,sampleRate):
+    
+    if not isinstance(sampleRate, int):
+        raise ValueError("sampleRate is not a integer value!")
+
+    # Round min and max to the nearest integer
+    # Add one (1) sample to the end to include end-point
+    structureLimits[0]=np.floor(structureLimits[0])
+    structureLimits[1]=np.ceil(structureLimits[1])+sampleRate
+    
+    # Generate an array of sample points for each dimension
+    x_points=np.arange(structureLimits[0,0],structureLimits[1,0],sampleRate, dtype=int)
+    y_points=np.arange(structureLimits[0,1],structureLimits[1,1],sampleRate, dtype=int)
+    z_points=np.arange(structureLimits[0,2],structureLimits[1,2],sampleRate, dtype=int)
+
+    ''' Use numpy.meshgrid to generate the sample points. Equivalent to the following:
+    
+    samplePoints=[]
+    for x in x_points
+        for y in y_points
+            for z in z_points
+                samplePoints.append([x,y,z])
+    '''
+    
+    x,y,z=np.meshgrid(x_points, y_points, z_points, indexing='ij')
+    samplePoints=np.column_stack((x, y, z))
+    
+    return samplePoints
+    
+        
 def scanRange(origin,delta,size,voxel):
     scanRange=np.zeros((3,size),dtype=int)
     for dimension,component in enumerate(boxOrigin):
