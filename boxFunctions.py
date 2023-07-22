@@ -42,7 +42,10 @@ def samplePoints(structureLimits,spacing=1):
     y_points=np.arange(structureLimits[0,1],structureLimits[1,1],spacing, dtype=int)
     z_points=np.arange(structureLimits[0,2],structureLimits[1,2],spacing, dtype=int)
 
-    ''' Use numpy.meshgrid to generate the sample points. Equivalent to the following:
+    '''
+    Use numpy.meshgrid to generate the sample points.
+    
+    Equivalent to the following:
     
     samplePoints=[]
     for x in x_points
