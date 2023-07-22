@@ -1,6 +1,6 @@
 import numpy as np
 
-def structureLimits(atomCoords):
+def get_structureLimits(atomCoords):
     ''' 
     Get the upper and lower bounds for every dimension from the given set of coordinates.
     Used to get the ranges of cartesian coordiantes that describe the entire structure.
@@ -20,7 +20,7 @@ def structureLimits(atomCoords):
     
     return structureLimits
 
-def samplePoints(structureLimits,spacing=10):
+def get_samplePoints(structureLimits,spacing=10):
     '''
     Given boundaries, generate a set of sample points spaced at regular intervals.
     Currently, we round to the nearest integer.
@@ -67,15 +67,18 @@ def samplePoints(structureLimits,spacing=10):
     '''
     
     x,y,z=np.meshgrid(x_points, y_points, z_points, indexing='ij')
-    samplePoints=np.column_stack((x, y, z))
+    samplePoints=np.stack((x, y, z),axis=-1).reshape(-1,3)
     
     return samplePoints
 
-def centralAA():
-    # Function to find the central amino acids
-    pass
+def get_centralAA(samplePoints,atomCoords,boxSize=20):
+    for sample in samplePoints:
+        buildBox(sample,boxSize,1,atomCoords)
+        break
+    
+
         
-def scanRange(origin,delta,size,voxel):
+def get_scanRange(origin,delta,size,voxel):
     scanRange=np.zeros((3,size),dtype=int)
     for dimension,component in enumerate(boxOrigin):
         # Add one (1) voxel to maximum to include endpoint
