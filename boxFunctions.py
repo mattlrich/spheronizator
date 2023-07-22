@@ -20,12 +20,18 @@ def structureLimits(atomCoords):
     
     return structureLimits
 
-def samplePoints(structureLimits,spacing=1):
+def samplePoints(structureLimits,spacing=10):
     '''
     Given boundaries, generate a set of sample points spaced at regular intervals.
     Currently, we round to the nearest integer.
     
-    Default spacing interval is 1 angstrom
+    Default spacing interval is 10 angstrom
+
+    Output array is in the following format:
+
+            x y z
+    point 1 . . .
+    point 2 . . .
     
     '''
     
@@ -33,14 +39,20 @@ def samplePoints(structureLimits,spacing=1):
         raise ValueError("sampleRate is not a integer value!")
 
     # Round min and max to the nearest integer
-    # Add one (1) sample to the end to include end-point
     structureLimits[0]=np.floor(structureLimits[0])
-    structureLimits[1]=np.ceil(structureLimits[1])+spacing
+    structureLimits[1]=np.ceil(structureLimits[1])
     
     # Generate an array of sample points for each dimension
-    x_points=np.arange(structureLimits[0,0],structureLimits[1,0],spacing, dtype=int)
-    y_points=np.arange(structureLimits[0,1],structureLimits[1,1],spacing, dtype=int)
-    z_points=np.arange(structureLimits[0,2],structureLimits[1,2],spacing, dtype=int)
+    # Add one (1) to the end to include end-point
+    x_points=np.arange(structureLimits[0,0],structureLimits[1,0]+1,spacing, dtype=int)
+    y_points=np.arange(structureLimits[0,1],structureLimits[1,1]+1,spacing, dtype=int)
+    z_points=np.arange(structureLimits[0,2],structureLimits[1,2]+1,spacing, dtype=int)
+
+    # Verify ranges for debugging purposes
+    if (x_points[-1]<structureLimits[1,0] or
+        y_points[-1]<structureLimits[1,1] or
+        z_points[-1]<structureLimits[1,2]):
+        raise ValueError("One of the atoms is out of range!")
 
     '''
     Use numpy.meshgrid to generate the sample points.
