@@ -1,4 +1,7 @@
 import numpy as np
+import math
+from Bio.PDB.PDBParser import PDBParser
+from Bio.PDB import vectors
 
 def get_structureLimits(atomCoords):
     ''' 
@@ -73,11 +76,19 @@ def get_samplePoints(structureLimits,spacing=10):
 
 def get_centralAA(samplePoints,atomCoords,boxSize=20):
     for sample in samplePoints:
-        buildBox(sample,boxSize,1,atomCoords)
-        break
-    
+        foundAtoms=buildBox(sample,atomCoords,boxSize)
+        if len(foundAtoms)!=0:
+            closestAtom=foundAtoms[0]
+            x=np.subtract(atomCoords[closestAtom],sample)
+            shortestDistance=np.dot(x,x)
 
-        
+            for atom in foundAtoms:
+                x=np.subtract(atomCoords[atom],sample)
+                d=np.dot(x,x) # We don't need the real distance, just d^2
+                if d<shortestDistance:
+                    shortestDistance=d
+                    closestAtom=atom
+    
 def get_scanRange(origin,delta,size,voxel):
     scanRange=np.zeros((3,size),dtype=int)
     for dimension,component in enumerate(boxOrigin):
@@ -86,7 +97,58 @@ def get_scanRange(origin,delta,size,voxel):
         scanRange[dimension,:]=np.arange(scanMin,scanMax,voxel)
     return scanRange
 
-def buildBox(boxOrigin, boxSize, voxel, atomCoords):
+def get_boxProjection(residue,atoms):
+    '''
+    Given a Biopython residue object to act as the center, and array of Biopython atom objects,
+    return a new array of atom coordinates that have been projected onto a standard position.
+
+    We may want to implement this as a matrix projection.
+    
+    Define new coordinate system as follows:
+    Let N, CA, C be coplanar and parallel to the xy-plane.
+    Let the vector i=N-CA be parallel to the x-axis.
+    Then the vector k=ix(C-CA) is parallel to the z-axis,
+    and the vector j=kxi is parallel to the y-axis.
+    
+    '''
+
+    # Extract three vectors from the residue
+    n=residue["N"].get_vector()
+    ca=residue["CA"].get_vector()
+    c=residue["C"].get_vector()
+
+    # Create two vectors, i and v, in the xy-plane with the alpha carbon as the origin.
+    i=n-ca
+    v=c-ca
+    
+    # Create vector in the direction of the z-axis
+    k=i**v # Cross Product
+
+    # Create vector in the direction of the y-axis
+    j=k**i
+
+    # Make each a unit vector. This saves us from having to recompute later
+    i=i/np.linalg.norm(i)
+    j=j/np.linalg.norm(j)
+    k=k/np.linalg.norm(k)
+
+    # Sanity-check: See that i,j,k are orthagonal to each other
+    if not (math.isclose(i*j, 0, abs_tol=1e-6) or
+            math.isclose(i*k, 0, abs_tol=1e-6) or
+            math.isclose(j*k, 0, abs_tol=1e-6)):
+            raise ValueError("Something is wrong with our imposed coordinate system!")
+
+    for atom in atoms:
+        u=atom.get_vector()-ca
+        x,y,z=i*u,j*u,k*u
+        projection=np.array([x, y, z])
+
+        # Sanity-check: distances to central atom should be the same in both coordinate systems
+        if not math.isclose(np.linalg.norm(u),np.linalg.norm(projection), abs_tol=1e-6):
+            raise ValueError("Something is wrong with our imposed coordinate system!")
+                
+
+def buildBox(boxOrigin, atomCoords, boxSize=20, voxel=1):
     # bitshift the boxsize (divide by 2) and store delta as integer value
     delta=np.intc(boxSize>>1)
     size=np.intc(boxSize/voxel+voxel)
