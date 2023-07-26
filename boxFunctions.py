@@ -138,15 +138,19 @@ def get_boxProjection(residue,atoms):
             math.isclose(j*k, 0, abs_tol=1e-6)):
             raise ValueError("Something is wrong with our imposed coordinate system!")
 
+    projectedCoordinates=[]
     for atom in atoms:
         u=atom.get_vector()-ca
-        x,y,z=i*u,j*u,k*u
+        x,y,z=i*u,j*u,k*u # Dot product
         projection=np.array([x, y, z])
 
         # Sanity-check: distances to central atom should be the same in both coordinate systems
         if not math.isclose(np.linalg.norm(u),np.linalg.norm(projection), abs_tol=1e-6):
             raise ValueError("Something is wrong with our imposed coordinate system!")
-                
+
+        projectedCoordinates.append(projection)
+        
+    return projectedCoordinates
 
 def buildBox(boxOrigin, atomCoords, boxSize=20, voxel=1):
     # bitshift the boxsize (divide by 2) and store delta as integer value
