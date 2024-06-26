@@ -1,3 +1,5 @@
+# Copyright (C) 2024 Matthew Richardson
+
 import numpy as np
 import math
 from Bio.PDB.PDBParser import PDBParser
