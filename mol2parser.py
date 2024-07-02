@@ -9,30 +9,29 @@ import re
 
 class mol2parser:
     def __init__(self):
-        pass
+        self.parsedData=[]
 
-    def parse(file):
+    def parse(self, file):
         
         with open(file, 'r') as mol2file:
     
-        parsedData=[]
-        sectionCounter=-1
+            sectionCounter=-1
         
-        delimiter=re.compile(r'\s+')
-        
-        for line in mol2file:
+            delimiter=re.compile(r'\s+')
             
-            line=line.strip()
+            for line in mol2file:
+                
+                line=line.strip()
+                
+                if line.startswith('@<TRIPOS>'):
+                    sectionCounter+=1
+                    self.parsedData.append([line.removeprefix('@<TRIPOS>')])
+                    sectionName=self.parsedData[sectionCounter][0]
             
-            if line.startswith('@<TRIPOS>'):
-                sectionCounter+=1
-                parsedData.append([line.removeprefix('@<TRIPOS>')])
-                sectionName=parsedData[sectionCounter][0]
-            
-            elif line:
-                line=delimiter.split(line)      
-                parsedData[sectionCounter].append(line)
-                        
+                elif line:
+                    line=delimiter.split(line)      
+                    self.parsedData[sectionCounter].append(line)
+                            
 
                     
 
