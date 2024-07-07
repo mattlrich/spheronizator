@@ -6,15 +6,19 @@ The goal of this parser is to maintain interoperability with Biopython's parsing
 '''
 
 import numpy as np
-from Bio.PDB.PDBParser import PDBParser
 import re
+from Bio.PDB.PDBParser import PDBParser
+from Bio.PDB.Polypeptide import is_aa
 
 class mol2parser:
     
     def __init__(self):
         pass
 
-    def parse(self,pdbfile,mol2file=pdbfile+'.mol2'):
+    def parse(self,pdbfile,mol2file=None):
+
+        if mol2file is None:
+            mol2file=pdbfile + '.mol2'
 
         try:
             self._parse_pdb(pdbfile)
@@ -46,10 +50,11 @@ class mol2parser:
         for residue in structure.get_residues():
             for index,atom in enumerate(residue.get_atoms()):
                 if index==0:
-                    atom.central=True
+                    atom.isCentral=True
                 else: 
-                    atom.central=False
+                    atom.isCentral=False
 
+                atom.isAA=is_aa(residue) # Make sure the residue is an amino acid
                 self.atoms.append(atom)
 
     def _parse_mol2(self, file):
