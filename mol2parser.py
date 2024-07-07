@@ -14,16 +14,18 @@ class mol2parser:
     def __init__(self):
         pass
 
-    def parse(self,file):
+    def parse(self,pdbfile,mol2file=pdbfile+'.mol2'):
 
         try:
-            self._parse_pdb(file)
-            self._parse_mol2(file+'.mol2')
+            self._parse_pdb(pdbfile)
+            self._parse_mol2(mol2file)
         
         except ParseError:
             print("Files were unable to be parsed")
 
     def update_records(self):
+
+        # Update the atom objects extracted from the PDB file with information from the corresponding mol2 file
 
         try:
             self._add_detailed_atom_type()
@@ -34,6 +36,8 @@ class mol2parser:
 
     def _parse_pdb(self, file):
 
+        # Call instance of Biopython PDB parser to get atom objects
+        
         pdb=PDBParser()
         structure=pdb.get_structure(file, file)
         
@@ -75,7 +79,7 @@ class mol2parser:
                             
                     
     def _get_atoms(self):
-        
+
         return self.parsedData[self.sections['ATOM']][1:]
 
     def _get_bonds(self):
@@ -83,9 +87,7 @@ class mol2parser:
         return self.parsedData[self.sections['BOND']][1:]
 
     def _add_detailed_atom_type(self):
-
-        # Update the atom objects extracted from the PDB file with information from the corresponding mol2 file
-
+        
         mol2atoms=self._get_atoms()
 
         for i in range(len(self.atoms)):
@@ -100,8 +102,6 @@ class mol2parser:
             
             originID, targetID, bondType=int(bond[1]), int(bond[2]), bond[3]
             originIndex=originID-1
-
-            # sanity check
 
             if not originID==self.atoms[originIndex].get_serial_number():
                 print(originID,self.atoms[originIndex].get_serial_number())
