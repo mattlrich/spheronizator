@@ -1,7 +1,7 @@
 ### Configuration File for box parameters
 
 # Size of each box
-boxSize=10
+boxSize=20
 
 # Spaces between each voxel (angstroms)
 voxelSpacing=1
