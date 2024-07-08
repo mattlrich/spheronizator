@@ -154,15 +154,14 @@ def get_boxProjection(residue,atoms):
         
     return projectedCoordinates
 
-def buildBox(boxOrigin, atomCoords, boxSize=20, voxel=1):
+def buildBox(boxOrigin, atomCoords, boxSize=20):
     # bitshift the boxsize (divide by 2) and store delta as integer value
     delta=np.intc(boxSize>>1)
-    size=np.intc(boxSize/voxel+voxel)
 
     # Get our scanning range for the algorithm from the origin point
     # We want to avoid recomputing this range every iteration because it is constant
     scanMin=[component-delta for component in boxOrigin]
-    scanMax=[component+delta+voxel for component in boxOrigin]
+    scanMax=[component+delta+1 for component in boxOrigin] # Add 1 to include endpoint
 
     foundAtoms=[]
     for index,atom in enumerate(atomCoords):
