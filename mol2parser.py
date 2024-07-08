@@ -43,11 +43,11 @@ class mol2parser:
         # Call instance of Biopython PDB parser to get atom objects
         
         pdb=PDBParser()
-        structure=pdb.get_structure(file, file)
+        self.structure=pdb.get_structure(file, file)
         
         self.atoms=[]
         
-        for residue in structure.get_residues():
+        for residue in self.structure.get_residues():
             for index,atom in enumerate(residue.get_atoms()):
                 if index==0:
                     atom.isCentral=True
@@ -109,8 +109,7 @@ class mol2parser:
             originIndex=originID-1
 
             if not originID==self.atoms[originIndex].get_serial_number():
-                print(originID,self.atoms[originIndex].get_serial_number())
-                raise ValueError
+                raise ValueError("mol2 atom index does not match PDB index")
 
             # Test to see if the atom object already contains the bondData attribute
             if not hasattr(self.atoms[originIndex],'bondData'):

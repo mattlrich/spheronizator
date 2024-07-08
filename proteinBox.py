@@ -87,3 +87,30 @@ class proteinBox:
         foundAtomsIndex=box.buildBox(origin,projectedAtoms,boxSize)
 
         return [self.atoms[i] for i in foundAtomsIndex]
+
+    def _debug_export_boxes(self,structure):
+
+       # This function is used to export generated boxes into a directory as PDB files themselves for testing/debugging purposes. 
+        
+        from Bio.PDB.PDBIO import Select
+        from Bio.PDB import PDBIO
+
+        io=PDBIO()
+        
+        class boxSelect(Select):
+            def accept_atom(self, atom):
+                if atom in foundAtoms:
+                    return True
+                else:
+                    return False
+
+        for index,centerAtom in enumerate(self.centralAtoms):
+
+            foundAtoms=self._build_box(centerAtom)
+            filename_out="output/box" + str(index+1) + ".pdb"
+            io.set_structure(structure)
+            io.save(filename_out,boxSelect())
+            print(filename_out)
+
+
+
