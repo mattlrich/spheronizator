@@ -76,6 +76,47 @@ def get_samplePoints(structureLimits,spacing=10):
     
     return samplePoints
 
+def get_voxels(boxSize=20,spacing=1):
+
+    '''
+    Return a 3D array of regularly spaced sample points to serve as voxels for our model.
+
+    '''
+    
+    if not isinstance(spacing, int):
+        raise ValueError("spacing is not a integer value!")
+
+    if not isinstance(boxSize, int):
+        raise ValueError("boxSize is not a integer value!")
+
+    if boxSize%2!=0:
+        raise ValueError("boxSize is not divisible by 2!")
+
+    delta=np.intc(boxSize>>1)
+    
+    x_points=np.arange(-delta,delta+1,spacing, dtype=int)
+    y_points=np.arange(-delta,delta+1,spacing, dtype=int)
+    z_points=np.arange(-delta,delta+1,spacing, dtype=int)
+
+    x,y,z=np.meshgrid(x_points, y_points, z_points, indexing='ij')
+    samplePoints=np.stack((x, y, z),axis=-1)
+
+    return samplePoints
+
+def get_closestVoxel(point,voxels):
+
+    '''
+    Given a point and array of voxels, return the index of the voxel that lies closest to that point.
+
+    '''
+    # Compute the distance from every voxel to the specified point
+    computedDistances=np.linalg.norm(voxels-point, axis=-1)
+
+    # Find the smallest distance and return the 3D index of this point, not the flattened index
+    minIndex=np.unravel_index(np.argmin(computedDistances), computedDistances.shape)
+
+    return minIndex,voxels[minIndex]
+
 def get_centralAA(samplePoints,atomCoords,boxSize=20):
     for sample in samplePoints:
         foundAtoms=buildBox(sample,atomCoords,boxSize)
@@ -175,4 +216,7 @@ def buildBox(boxOrigin, atomCoords, boxSize=20):
             foundAtoms.append(index)
 
     return foundAtoms
+
+def get_sphereProjection(residue,atoms):
+    pass
             
