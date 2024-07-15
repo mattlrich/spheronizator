@@ -117,3 +117,5 @@ class mol2parser:
 
             self.atoms[originIndex].bondData.append([targetID,bondType])
 
+class ParseError(Exception):
+    pass
