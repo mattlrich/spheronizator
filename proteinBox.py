@@ -16,12 +16,12 @@ class proteinBox:
 
         # Wrapper method for mol2parser class. This simplifies the interface.
 
-        parser=mol2parser(pdbfile, mol2file)    # Create instance of parser object
+        parser=mol2parser(pdbfile, mol2file)    # Create instance of parser object, parse and update atom objects
         self.atoms=parser.atoms
+        self.residues=parser.residues
     
     def buildData(self):
         
-        self._get_central_atoms()               # Get our central atoms, one for each residue
         self._get_voxels()                      # Generate our voxels we will need for each box and store as object attribute
 
         # Get output array ready
@@ -29,15 +29,15 @@ class proteinBox:
         boxSize=self.boxSize+1
 
         self.output=np.zeros((
-                len(self.centralAtoms),         # Number of residues
+                len(self.residues),             # Number of residues
                 boxSize,                        # Box size
                 boxSize,
                 boxSize,
                 5                               # Number of features
                 ), dtype=int)
         
-        for i in range(len(self.centralAtoms)):
-            foundAtoms, foundAtomIndices, projectedCoords=self._build_box(self.centralAtoms[i])
+        for i in range(len(self.residues)):
+            foundAtomIndices, projectedCoords=self._build_box(self.residues[i])
             array=self._process_box(foundAtomIndices, projectedCoords)
             
             self.output[i]+=array
@@ -76,15 +76,6 @@ class proteinBox:
         # Unpack values to attributes. This allows this values to be changed after initialization.
         self.boxSize=self.config['boxSize']
         self.voxelSpacing=self.config['voxelSpacing']
-
-    
-    def _get_central_atoms(self):
-
-        self.centralAtoms=[]
-
-        for atom in self.atoms:
-            if atom.isAA and atom.isCentral:
-                self.centralAtoms.append(atom)
     
     def _extract_coords(self):
         
@@ -100,24 +91,19 @@ class proteinBox:
         self.centralCoords=np.array(self.centralCoords, dtype=np.float32)
         self.atomCoords=np.array(self.atomCoords, dtype=np.float32)
 
-    def _build_box(self, centerAtom):
+    def _build_box(self, residue):
 
-        ## Give the function a center atom object to build the box about
-
-        # Get parent residue of center atom
-        residue=centerAtom.get_parent()
+        ## Give the function a residue to build the box about
 
         # Obtain coordinate projection of all atom objects about a standard position based on the parent residue
-        projectedAtoms=box.get_boxProjection(residue,self.atoms)
+        projectedAtoms=box.get_boxProjection(residue, self.atoms)
 
         origin=(0,0,0) # Origin is zero for every *projected* box
 
         # Get the indices of all atoms contained within the box
         foundAtomIndices=box.buildBox(origin,projectedAtoms,self.boxSize)
 
-        foundAtoms=[self.atoms[i] for i in foundAtomIndices]
-
-        return foundAtoms, foundAtomIndices, projectedAtoms
+        return foundAtomIndices, projectedAtoms
                 
     def _get_voxels(self):
 
@@ -165,9 +151,10 @@ class proteinBox:
                 else:
                     return False
 
-        for index,centerAtom in enumerate(self.centralAtoms):
+        for index,residue in enumerate(self.residues):
 
-            foundAtoms, foundAtomsIndex, projectedCoords=self._build_box(centerAtom)
+            foundAtomsIndex, projectedCoords=self._build_box(residue)
+            foundAtoms=[self.atoms[i] for i in foundAtomsIndex]
             filename_out="output/box" + str(index+1) + ".pdb"
             io.set_structure(structure)
             io.save(filename_out,boxSelect())

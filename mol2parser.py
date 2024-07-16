@@ -39,21 +39,20 @@ class mol2parser:
 
     def _parse_pdb(self, file):
 
-        # Call instance of Biopython PDB parser to get atom objects
+        # Call instance of Biopython PDB parser to get structure, residues, and atom objects
         
         pdb=PDBParser()
         self.structure=pdb.get_structure(file, file)
         
         self.atoms=[]
+        self.residues=[]
         
         for residue in self.structure.get_residues():
-            for index,atom in enumerate(residue.get_atoms()):
-                if index==0:
-                    atom.isCentral=True
-                else: 
-                    atom.isCentral=False
 
-                atom.isAA=is_aa(residue) # Make sure the residue is an amino acid
+            if is_aa(residue):
+                self.residues.append(residue)
+
+            for atom in residue.get_atoms():
                 self.atoms.append(atom)
 
     def _parse_mol2(self, file):
