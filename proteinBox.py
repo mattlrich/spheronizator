@@ -3,23 +3,39 @@
 import boxFunctions as box
 import numpy as np
 import re
+from mol2parser import mol2parser
 
 class proteinBox:
 
-    def __init__(self,atoms):
-
-        # Input should be a list of Biopython atom objects and they should have their records updated with the corresponding mol2 file
-        self.atoms=atoms
+    def __init__(self, config=None):
         
         # Load configuration file
-        self._get_config()
+        self._get_config(config)
 
 
+    def parse(self, pdbfile, mol2file=None):
+
+        # Wrapper for mol2parser. Adds method to proteinBox object to simplify interface.
+
+        parser=mol2parser(pdbfile, mol2file)    # Create instance of parser object
+        self.atoms=parser.atoms
+    
     def buildData(self):
         
         # Extract coordinates from atom objects
-        self._extract_coords()
-        self._get_central_atoms()
+        #self._extract_coords()
+        self._get_central_atoms()               # Get our central atoms, one for each residue
+        self._get_voxels()                      # Generate our voxels we will need for each box and store as object attribute
+
+        # Get output array ready
+        
+        self.output=np.zeros((
+                len(self.centralAtoms),         # Number of residues
+                self.config['boxSize'],         # Box size
+                self.config['boxSize'],
+                self.config['boxSize'],
+                4                               # Number of features
+                ), dtype=int)
 
 
     def _get_config(self,configPath=None):
@@ -87,6 +103,15 @@ class proteinBox:
         foundAtomsIndex=box.buildBox(origin,projectedAtoms,boxSize)
 
         return [self.atoms[i] for i in foundAtomsIndex]
+                
+    def _get_voxels(self):
+
+        # Generate the voxels we will need for the whole structure. Voxels are not unique to each box, so they only need to be generated once.
+        
+        boxSize=self.config['boxSize']
+        voxelSpacing=self.config['voxelSpacing']
+
+        self.voxels=box.get_voxels(boxSize,voxelSpacing)
 
     def _debug_export_boxes(self,structure):
 

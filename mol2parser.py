@@ -20,7 +20,7 @@ class mol2parser:
         try:
             self._parse_pdb(pdbfile)                # First parse the PDB file to get a structure object
             self._parse_mol2(mol2file)              # Parse corresponding mol2file to extract additional data about the protein
-            self._update_records(self)              # Add the mol2file data to the atom objects obtained from the PDB file
+            self._update_records()                  # Add the mol2file data to the atom objects obtained from the PDB file
         
         except ParseError:
             print("Files were unable to be parsed")
