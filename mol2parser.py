@@ -46,14 +46,26 @@ class mol2parser:
         
         self.atoms=[]
         self.residues=[]
-        
+        residueIndex=-1
+
         for residue in self.structure.get_residues():
 
             if is_aa(residue):
-                self.residues.append(residue)
 
-            for atom in residue.get_atoms():
-                self.atoms.append(atom)
+                self.residues.append(residue)
+                residueIndex+=1
+
+                for atom in residue.get_atoms():
+                    atom.isAA=True
+                    atom.residueIndex=residueIndex
+                    self.atoms.append(atom)
+
+            else:
+
+                for atom in residue.get_atoms():
+                    atom.isAA=False
+                    atom.residueIndex=False
+                    self.atoms.append(atom)
 
     def _parse_mol2(self, file):
         

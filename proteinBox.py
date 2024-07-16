@@ -38,9 +38,9 @@ class proteinBox:
         
         for i in range(len(self.residues)):
             foundAtomIndices, projectedCoords=self._build_box(self.residues[i])
-            array=self._process_box(foundAtomIndices, projectedCoords)
+            boxArray=self._process_box(foundAtomIndices, projectedCoords, i)
             
-            self.output[i]+=array
+            self.output[i]+=boxArray
                
     def _get_config(self,configPath=None):
 
@@ -110,9 +110,9 @@ class proteinBox:
         # Generate voxels and store as attribute.  Voxels are not unique to each box, so they only need to be generated once.
         self.voxels=box.get_voxels(self.boxSize,self.voxelSpacing)
 
-    def _process_box(self, foundAtomIndices, projectedCoords):
+    def _process_box(self, foundAtomIndices, projectedCoords, residueIndex):
         
-        array=np.zeros((self.output.shape[1:]), dtype=int)
+        boxArray=np.zeros((self.output.shape[1:]), dtype=int)
        
         atomTypeDict={
                     'C':0,
@@ -131,9 +131,13 @@ class proteinBox:
             except:
                 continue
 
-            array[voxelIndex][typeHeavyAtomIndex]=1
+            if atom.isAA and atom.residueIndex==residueIndex:
+                boxArray[voxelIndex][typeHeavyAtomIndex]=-1
 
-            return array
+            else:        
+                boxArray[voxelIndex][typeHeavyAtomIndex]=1
+
+            return boxArray
 
     def _debug_export_boxes(self,structure):
 
