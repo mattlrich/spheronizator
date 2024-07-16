@@ -22,21 +22,27 @@ class proteinBox:
     
     def buildData(self):
         
-        # Extract coordinates from atom objects
-        #self._extract_coords()
         self._get_central_atoms()               # Get our central atoms, one for each residue
         self._get_voxels()                      # Generate our voxels we will need for each box and store as object attribute
 
         # Get output array ready
         
+        boxSize=self.config['boxSize']+1
+
         self.output=np.zeros((
                 len(self.centralAtoms),         # Number of residues
-                self.config['boxSize'],         # Box size
-                self.config['boxSize'],
-                self.config['boxSize'],
-                4                               # Number of features
+                boxSize,                        # Box size
+                boxSize,
+                boxSize,
+                5                               # Number of features
                 ), dtype=int)
-
+        
+        for i in range(len(self.centralAtoms)):
+            foundAtoms, foundAtomIndices, projectedCoords=self._build_box(self.centralAtoms[i])
+            array=self._process_box(foundAtomIndices, projectedCoords)
+            
+            self.output[i]+=array
+               
 
     def _get_config(self,configPath=None):
 
@@ -97,12 +103,14 @@ class proteinBox:
         # Obtain coordinate projection of all atom objects about a standard position based on the parent residue
         projectedAtoms=box.get_boxProjection(residue,self.atoms)
 
-        origin=[0,0,0] # Origin is zero for every *projected* box
+        origin=(0,0,0) # Origin is zero for every *projected* box
         boxSize=self.config['boxSize']
 
-        foundAtomsIndex=box.buildBox(origin,projectedAtoms,boxSize)
+        foundAtomIndices=box.buildBox(origin,projectedAtoms,boxSize)
 
-        return [self.atoms[i] for i in foundAtomsIndex]
+        foundAtoms=[self.atoms[i] for i in foundAtomIndices]
+
+        return foundAtoms, foundAtomIndices, projectedAtoms
                 
     def _get_voxels(self):
 
@@ -112,6 +120,32 @@ class proteinBox:
         voxelSpacing=self.config['voxelSpacing']
 
         self.voxels=box.get_voxels(boxSize,voxelSpacing)
+
+    def _process_box(self, foundAtomIndices, projectedCoords):
+        
+        array=np.zeros((self.output.shape[1:]), dtype=int)
+       
+        atomTypeDict={
+                    'C':0,
+                    'N':1,
+                    'O':2,
+                    'P':3,
+                    'S':4
+                }
+
+        for i in foundAtomIndices:
+            atom=self.atoms[i]
+            voxelIndex, voxelCoords=box.get_closestVoxel(projectedCoords[i], self.voxels)
+            
+            try:
+                typeHeavyAtomIndex=atomTypeDict[atom.atomType]
+            except:
+                continue
+
+            array[voxelIndex][typeHeavyAtomIndex]=1
+
+            return array
+
 
     def _debug_export_boxes(self,structure):
 
@@ -131,7 +165,7 @@ class proteinBox:
 
         for index,centerAtom in enumerate(self.centralAtoms):
 
-            foundAtoms=self._build_box(centerAtom)
+            foundAtoms, foundAtomsIndex, projectedCoords=self._build_box(centerAtom)
             filename_out="output/box" + str(index+1) + ".pdb"
             io.set_structure(structure)
             io.save(filename_out,boxSelect())

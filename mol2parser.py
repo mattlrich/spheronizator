@@ -31,6 +31,7 @@ class mol2parser:
 
         try:
             self._add_detailed_atom_type()
+            self._add_atom_type()
             self._add_bond_info()
         
         except ParseError:
@@ -96,6 +97,10 @@ class mol2parser:
         for i in range(len(self.atoms)):
             self.atoms[i].detailedAtomType=mol2atoms[i][5]
 
+    def _add_atom_type(self):
+
+        for i in range(len(self.atoms)):
+            self.atoms[i].atomType=self.atoms[i].detailedAtomType[0]
         
     def _add_bond_info(self):
 
