@@ -12,10 +12,9 @@ class proteinBox:
         # Load configuration file
         self._get_config(config)
 
-
     def parse(self, pdbfile, mol2file=None):
 
-        # Wrapper for mol2parser. Adds method to proteinBox object to simplify interface.
+        # Wrapper method for mol2parser class. This simplifies the interface.
 
         parser=mol2parser(pdbfile, mol2file)    # Create instance of parser object
         self.atoms=parser.atoms
@@ -27,7 +26,7 @@ class proteinBox:
 
         # Get output array ready
         
-        boxSize=self.config['boxSize']+1
+        boxSize=self.boxSize+1
 
         self.output=np.zeros((
                 len(self.centralAtoms),         # Number of residues
@@ -43,7 +42,6 @@ class proteinBox:
             
             self.output[i]+=array
                
-
     def _get_config(self,configPath=None):
 
         if configPath is None:
@@ -64,11 +62,20 @@ class proteinBox:
                 
                 for i in range(len(config)):
                     config[i][1]=int(config[i][1])
-
+                
                 self.config=dict(config)
 
         except:
             print("\nConfigation file was unable to be parsed, applying defaults.")
+
+            self.config={
+                        'boxSize':20,
+                        'voxelSpacing':1                   
+                    }
+
+        # Unpack values to attributes. This allows this values to be changed after initialization.
+        self.boxSize=self.config['boxSize']
+        self.voxelSpacing=self.config['voxelSpacing']
 
     
     def _get_central_atoms(self):
@@ -104,9 +111,9 @@ class proteinBox:
         projectedAtoms=box.get_boxProjection(residue,self.atoms)
 
         origin=(0,0,0) # Origin is zero for every *projected* box
-        boxSize=self.config['boxSize']
 
-        foundAtomIndices=box.buildBox(origin,projectedAtoms,boxSize)
+        # Get the indices of all atoms contained within the box
+        foundAtomIndices=box.buildBox(origin,projectedAtoms,self.boxSize)
 
         foundAtoms=[self.atoms[i] for i in foundAtomIndices]
 
@@ -114,12 +121,8 @@ class proteinBox:
                 
     def _get_voxels(self):
 
-        # Generate the voxels we will need for the whole structure. Voxels are not unique to each box, so they only need to be generated once.
-        
-        boxSize=self.config['boxSize']
-        voxelSpacing=self.config['voxelSpacing']
-
-        self.voxels=box.get_voxels(boxSize,voxelSpacing)
+        # Generate voxels and store as attribute.  Voxels are not unique to each box, so they only need to be generated once.
+        self.voxels=box.get_voxels(self.boxSize,self.voxelSpacing)
 
     def _process_box(self, foundAtomIndices, projectedCoords):
         
@@ -145,7 +148,6 @@ class proteinBox:
             array[voxelIndex][typeHeavyAtomIndex]=1
 
             return array
-
 
     def _debug_export_boxes(self,structure):
 
