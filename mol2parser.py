@@ -12,22 +12,20 @@ from Bio.PDB.Polypeptide import is_aa
 
 class mol2parser:
     
-    def __init__(self):
-        pass
-
-    def parse(self,pdbfile,mol2file=None):
-
+    def __init__(self,pdbfile,mol2file=None):
+        
         if mol2file is None:
             mol2file=pdbfile + '.mol2'
 
         try:
-            self._parse_pdb(pdbfile)
-            self._parse_mol2(mol2file)
+            self._parse_pdb(pdbfile)                # First parse the PDB file to get a structure object
+            self._parse_mol2(mol2file)              # Parse corresponding mol2file to extract additional data about the protein
+            self._update_records(self)              # Add the mol2file data to the atom objects obtained from the PDB file
         
         except ParseError:
             print("Files were unable to be parsed")
 
-    def update_records(self):
+    def _update_records(self):
 
         # Update the atom objects extracted from the PDB file with information from the corresponding mol2 file
 
