@@ -17,8 +17,11 @@ class proteinBox:
         # Wrapper method for mol2parser class. This simplifies the interface.
 
         parser=mol2parser(pdbfile, mol2file)    # Create instance of parser object, parse and update atom objects
-        self.atoms=parser.atoms
+        self.structure=parser.structure
         self.residues=parser.residues
+        self.atoms=parser.atoms
+
+        self._get_resnames()
     
     def buildData(self):
         
@@ -76,6 +79,10 @@ class proteinBox:
         # Unpack values to attributes. This allows this values to be changed after initialization.
         self.boxSize=self.config['boxSize']
         self.voxelSpacing=self.config['voxelSpacing']
+    
+    def _get_resnames(self):
+
+        self.resnames=[residue.get_resname() for residue in self.residues]
     
     def _extract_coords(self):
         
@@ -139,7 +146,7 @@ class proteinBox:
 
             return boxArray
 
-    def _debug_export_boxes(self,structure):
+    def _debug_export_boxes(self):
 
        # This function is used to export generated boxes into a directory as PDB files themselves for testing/debugging purposes. 
         
@@ -160,7 +167,7 @@ class proteinBox:
             foundAtomsIndex, projectedCoords=self._build_box(residue)
             foundAtoms=[self.atoms[i] for i in foundAtomsIndex]
             filename_out="output/box" + str(index+1) + ".pdb"
-            io.set_structure(structure)
+            io.set_structure(self.structure)
             io.save(filename_out,boxSelect())
             print(filename_out)
 
