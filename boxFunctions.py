@@ -94,14 +94,19 @@ def get_voxels(boxSize=20,spacing=1):
 
     delta=np.intc(boxSize>>1)
     
-    x_points=np.arange(-delta,delta+1,spacing, dtype=int)
-    y_points=np.arange(-delta,delta+1,spacing, dtype=int)
-    z_points=np.arange(-delta,delta+1,spacing, dtype=int)
+    x_points=np.arange(-delta, delta+spacing, spacing, dtype=int)
+    y_points=np.arange(-delta, delta+spacing, spacing, dtype=int)
+    z_points=np.arange(-delta, delta+spacing, spacing, dtype=int)
 
     x,y,z=np.meshgrid(x_points, y_points, z_points, indexing='ij')
     samplePoints=np.stack((x, y, z),axis=-1)
 
     return samplePoints
+
+def get_floatVoxels(boxSize=20,spacing=1):
+
+    if not np.isclose(np.mod(boxSize, spacing), 0, 1e-9):
+        raise ValueError("spacing does not divide boxSize!")
 
 def get_closestVoxel(point,voxels):
 
