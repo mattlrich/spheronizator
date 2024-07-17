@@ -19,7 +19,7 @@ class proteinBox:
         parser=mol2parser(pdbfile, mol2file)    # Create instance of parser object, parse and update atom objects
         self.structure=parser.structure
         self.residues=parser.residues
-        self.atoms=parser.atoms
+        self.atoms=[atom for atom in parser.atoms if atom.isAA]
 
         self._get_resnames()
     
@@ -36,7 +36,7 @@ class proteinBox:
                 boxSize,                        # Box size
                 boxSize,
                 boxSize,
-                5                               # Number of features
+                6                               # Number of features
                 ), dtype=int)
         
         for i in range(len(self.residues)):
@@ -122,11 +122,12 @@ class proteinBox:
         boxArray=np.zeros((self.output.shape[1:]), dtype=int)
        
         atomTypeDict={
-                    'C':0,
-                    'N':1,
-                    'O':2,
-                    'P':3,
-                    'S':4
+                    'H':0,
+                    'C':1,
+                    'N':2,
+                    'O':3,
+                    'P':4,
+                    'S':5
                 }
 
         for i in foundAtomIndices:

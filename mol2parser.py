@@ -21,7 +21,7 @@ class mol2parser:
             self._parse_pdb(pdbfile)                # First parse the PDB file to get a structure object
             self._parse_mol2(mol2file)              # Parse corresponding mol2file to extract additional data about the protein
             self._update_records()                  # Add the mol2file data to the atom objects obtained from the PDB file
-        
+
         except ParseError:
             print("Files were unable to be parsed")
 
@@ -114,13 +114,13 @@ class mol2parser:
             self.atoms[i].atomType=self.atoms[i].detailedAtomType[0]
         
     def _add_bond_info(self):
-
+        
         mol2bonds=self._get_bonds()
 
         for bond in mol2bonds:
             
             originID, targetID, bondType=int(bond[1]), int(bond[2]), bond[3]
-            originIndex=originID-1
+            originIndex, targetIndex=originID-1, targetID-1
 
             if not originID==self.atoms[originIndex].get_serial_number():
                 raise ValueError("mol2 atom index does not match PDB index")
@@ -129,7 +129,7 @@ class mol2parser:
             if not hasattr(self.atoms[originIndex],'bondData'):
                 self.atoms[originIndex].bondData=[]
 
-            self.atoms[originIndex].bondData.append([targetID,bondType])
+            self.atoms[originIndex].bondData.append([targetIndex, bondType])
 
 class ParseError(Exception):
     pass
