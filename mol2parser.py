@@ -1,7 +1,7 @@
 # Copyright (C) 2024 Matthew Richardson
 
 '''
-The goal of this parser is to maintain interoperability with Biopython's parsing of PDB files while adding information within mol2 files to Biopython structure objects.
+The goal of this parser is to maintain interoperability with Biopython's parsing of PDB files while adding information within mol2 files to Biopython structure objects. Although the name of this class is 'mol2parser', it is a combination PDB parser and mol2parser. The private methods may be used to parse mol2 files individually, but this parser is not designed to be used this way.
 
 '''
 
@@ -33,6 +33,7 @@ class mol2parser:
             self._add_detailed_atom_type()
             self._add_atom_type()
             self._add_bond_info()
+            self._add_atom_index()
         
         except ParseError:
             print("Unable to update atomic records from mol2 file")
@@ -113,6 +114,11 @@ class mol2parser:
         for i in range(len(self.atoms)):
             self.atoms[i].atomType=self.atoms[i].detailedAtomType[0]
         
+    def _add_atom_index(self):
+
+        for i in range(len(self.atoms)):
+            self.atoms[i].mol2atomIndex=i
+    
     def _add_bond_info(self):
         
         mol2bonds=self._get_bonds()
@@ -122,6 +128,7 @@ class mol2parser:
             originID, targetID, bondType=int(bond[1]), int(bond[2]), bond[3]
             originIndex, targetIndex=originID-1, targetID-1
 
+            # Sanity Check
             if not originID==self.atoms[originIndex].get_serial_number():
                 raise ValueError("mol2 atom index does not match PDB index")
 

@@ -12,6 +12,23 @@ class proteinBox:
         # Load configuration file
         self._get_config(config)
 
+        self.bondTypeDict={
+                '1':0,
+                '2':1,
+                '3':2,
+                'am':3,
+                'ar':4
+                }
+
+        self.atomTypeDict={
+                'H':0,
+                'C':1,
+                'N':2,
+                'O':3,
+                'P':4,
+                'S':5
+                }
+
     def parse(self, pdbfile, mol2file=None):
 
         # Wrapper method for mol2parser class. This simplifies the interface.
@@ -19,6 +36,8 @@ class proteinBox:
         parser=mol2parser(pdbfile, mol2file)    # Create instance of parser object, parse and update atom objects
         self.structure=parser.structure
         self.residues=parser.residues
+
+        # Only get atoms that belong to amino acids
         self.atoms=[atom for atom in parser.atoms if atom.isAA]
 
         self._get_resnames()
@@ -26,24 +45,18 @@ class proteinBox:
     def buildData(self):
         
         self._get_voxels()                      # Generate our voxels we will need for each box and store as object attribute
+        self._init_arrays()                     # Initialize all arrays we will need for output data
 
-        # Get output array ready
-        
-        boxSize=self.boxSize+1
-
-        self.output=np.zeros((
-                len(self.residues),             # Number of residues
-                boxSize,                        # Box size
-                boxSize,
-                boxSize,
-                6                               # Number of features
-                ), dtype=int)
-        
         for i in range(len(self.residues)):
+    
+            # Build data for atom abscence / presence
             foundAtomIndices, projectedCoords=self._build_box(self.residues[i])
             boxArray=self._process_box(foundAtomIndices, projectedCoords, i)
             
             self.output[i]+=boxArray
+
+            # Build data for bond information
+            self._process_box_bonds(foundAtomIndices, i)
                
     def _get_config(self,configPath=None):
 
@@ -80,6 +93,25 @@ class proteinBox:
         self.boxSize=self.config['boxSize']
         self.voxelSpacing=self.config['voxelSpacing']
     
+    def _init_arrays(self):
+        
+        boxSize=self.boxSize+1
+        residueCount=len(self.residues)
+
+        # Output array for heavy atom presence / abscence
+        self.output=np.zeros((
+                residueCount,                   # Number of residues
+                boxSize,                        # Box size
+                boxSize,
+                boxSize,
+                len(self.atomTypeDict)          # Size of atomTypeDict representing the number of atom channels
+                ), dtype=int)
+
+        self.outputBonds=np.zeros((
+                residueCount,
+                len(self.bondTypeDict)
+                ), dtype=int)
+    
     def _get_resnames(self):
 
         self.resnames=[residue.get_resname() for residue in self.residues]
@@ -108,7 +140,7 @@ class proteinBox:
         origin=(0,0,0) # Origin is zero for every *projected* box
 
         # Get the indices of all atoms contained within the box
-        foundAtomIndices=box.buildBox(origin,projectedAtoms,self.boxSize)
+        foundAtomIndices=box.buildBox(origin, projectedAtoms, self.boxSize)
 
         return foundAtomIndices, projectedAtoms
                 
@@ -119,23 +151,14 @@ class proteinBox:
 
     def _process_box(self, foundAtomIndices, projectedCoords, residueIndex):
         
-        boxArray=np.zeros((self.output.shape[1:]), dtype=int)
-       
-        atomTypeDict={
-                    'H':0,
-                    'C':1,
-                    'N':2,
-                    'O':3,
-                    'P':4,
-                    'S':5
-                }
+        boxArray=np.zeros((self.output.shape[1:]), dtype=int) 
 
         for i in foundAtomIndices:
             atom=self.atoms[i]
             voxelIndex, voxelCoords=box.get_closestVoxel(projectedCoords[i], self.voxels)
             
             try:
-                typeHeavyAtomIndex=atomTypeDict[atom.atomType]
+                typeHeavyAtomIndex=self.atomTypeDict[atom.atomType]
             except:
                 continue
 
@@ -147,6 +170,26 @@ class proteinBox:
 
             return boxArray
 
+    def _process_box_bonds(self, foundAtomIndices, residueIndex):
+        
+        mol2indices=[self.atoms[i].mol2atomIndex for i in foundAtomIndices]
+        
+        for i in foundAtomIndices:
+            
+            atom=self.atoms[i]
+
+            if hasattr(atom, 'bondData'):
+                for bond in atom.bondData:
+                    if bond[0] in mol2indices:
+                        try:
+                            bondIndex=self.bondTypeDict[bond[1]]
+
+                        except:
+                            continue
+
+                        self.outputBonds[residueIndex][bondIndex]+=1
+
+    
     def _debug_export_boxes(self):
 
        # This function is used to export generated boxes into a directory as PDB files themselves for testing/debugging purposes. 
