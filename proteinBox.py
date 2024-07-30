@@ -76,8 +76,6 @@ class proteinBox:
                     if line and not line.startswith('#'):
                         config.append(delimiter.split(line))
                 
-                for i in range(len(config)):
-                    config[i][1]=int(config[i][1])
                 
                 self.config=dict(config)
 
@@ -86,12 +84,14 @@ class proteinBox:
 
             self.config={
                         'boxSize':20,
-                        'voxelSpacing':1                   
+                        'voxelSpacing':1,
+                        'useFloatVoxels':False
                     }
 
         # Unpack values to attributes. This allows this values to be changed after initialization.
-        self.boxSize=self.config['boxSize']
-        self.voxelSpacing=self.config['voxelSpacing']
+        self.boxSize=int(self.config['boxSize'])
+        self.voxelSpacing=int(self.config['voxelSpacing'])
+        self.useFloatVoxels=bool(self.config['useFloatVoxels'])
     
     def _init_arrays(self):
         
@@ -147,7 +147,11 @@ class proteinBox:
     def _get_voxels(self):
 
         # Generate voxels and store as attribute.  Voxels are not unique to each box, so they only need to be generated once.
-        self.voxels=box.get_voxels(self.boxSize,self.voxelSpacing)
+        if self.useFloatVoxels:
+            self.voxels=box.get_floatVoxels(self.boxSize, self.voxelSpacing)
+
+        else:
+            self.voxels=box.get_voxels(self.boxSize, self.voxelSpacing)
 
     def _process_box(self, foundAtomIndices, projectedCoords, residueIndex):
         
