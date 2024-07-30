@@ -85,7 +85,7 @@ class proteinBox:
             self.config={
                         'boxSize':20,
                         'voxelSpacing':1,
-                        'useFloatVoxels':False
+                        'useFloatVoxels':True
                     }
 
         # Unpack values to attributes. This allows this values to be changed after initialization.
@@ -95,15 +95,15 @@ class proteinBox:
     
     def _init_arrays(self):
         
-        boxSize=self.boxSize+1
+        voxelShape=np.rint(np.divide(self.boxSize, self.voxelSpacing) + 1).astype(int)
         residueCount=len(self.residues)
 
         # Output array for heavy atom presence / abscence
         self.output=np.zeros((
                 residueCount,                   # Number of residues
-                boxSize,                        # Box size
-                boxSize,
-                boxSize,
+                voxelShape,                     # Box size
+                voxelShape,
+                voxelShape,
                 len(self.atomTypeDict)          # Size of atomTypeDict representing the number of atom channels
                 ), dtype=int)
 
