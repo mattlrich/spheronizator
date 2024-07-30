@@ -12,14 +12,16 @@ class proteinBox:
         # Load configuration file
         self._get_config(config)
 
+        # Attribute bondTypeDict determines the indexing of the output array in addition to the types of bonds that will be present in the output. Strings must match what is present in the associated mol2 file.
         self.bondTypeDict={
-                '1':0,
-                '2':1,
-                '3':2,
-                'am':3,
-                'ar':4
+                '1':0,      # Single bonds
+                '2':1,      # Double bonds
+                '3':2,      # Triple bonds
+                'am':3,     # Amides
+                'ar':4      # Aromatics
                 }
 
+        # Attribute atomTypeDict determines the indexing of the output array in addition to the types of atoms that will be present in the output. Strings must match what is present in the first character of the associated mol2 file atom type. 
         self.atomTypeDict={
                 'H':0,
                 'C':1,
@@ -28,6 +30,10 @@ class proteinBox:
                 'P':4,
                 'S':5
                 }
+
+    def reloadConfig(self, configPath=None):
+        
+        self.get_config(configPath)
 
     def parse(self, pdbfile, mol2file=None):
 
@@ -47,6 +53,11 @@ class proteinBox:
         self._get_voxels()                      # Generate our voxels we will need for each box and store as object attribute
         self._init_arrays()                     # Initialize all arrays we will need for output data
 
+        # Sanity check
+        if self.voxels.shape[0:3]!=self.output.shape[1:4]:
+            raise ValueError("Voxel array shape and output array shape do not match! File a bug report.")
+
+        
         for i in range(len(self.residues)):
     
             # Build data for atom abscence / presence
@@ -58,7 +69,7 @@ class proteinBox:
             # Build data for bond information
             self._process_box_bonds(foundAtomIndices, i)
                
-    def _get_config(self,configPath=None):
+    def _get_config(self, configPath=None):
 
         if configPath is None:
             configPath='config'
@@ -80,7 +91,7 @@ class proteinBox:
                 self.config=dict(config)
 
         except:
-            print("\nConfigation file was unable to be parsed, applying defaults.")
+            print("Configation file was unable to be parsed, applying defaults.")
 
             self.config={
                         'boxSize':20,
@@ -89,55 +100,40 @@ class proteinBox:
                     }
 
         # Unpack values to attributes. This allows this values to be changed after initialization.
-        self.boxSize=int(self.config['boxSize'])
-        self.voxelSpacing=int(self.config['voxelSpacing'])
-        self.useFloatVoxels=bool(self.config['useFloatVoxels'])
+        self.boxSize            = int(  self.config['boxSize'])
+        self.voxelSpacing       = int(  self.config['voxelSpacing'])
+        self.useFloatVoxels     = bool( self.config['useFloatVoxels'])
     
     def _init_arrays(self):
         
-        voxelShape=np.rint(np.divide(self.boxSize, self.voxelSpacing) + 1).astype(int)
+        voxelArrayLength=np.rint(np.divide(self.boxSize, self.voxelSpacing) + 1).astype(int)
         residueCount=len(self.residues)
 
-        # Output array for heavy atom presence / abscence
+        # Output array for atom presence / abscence
         self.output=np.zeros((
-                residueCount,                   # Number of residues
-                voxelShape,                     # Box size
-                voxelShape,
-                voxelShape,
-                len(self.atomTypeDict)          # Size of atomTypeDict representing the number of atom channels
+                residueCount,                   # Number of residues in protein
+                voxelArrayLength,               # Size of voxel array
+                voxelArrayLength,
+                voxelArrayLength,
+                len(self.atomTypeDict)          # Size of atomTypeDict representing the count of atom channels
                 ), dtype=int)
 
         self.outputBonds=np.zeros((
                 residueCount,
-                len(self.bondTypeDict)
+                len(self.bondTypeDict)          # Size of bondTypeDict representing the count of different types of bonds to be considered
                 ), dtype=int)
     
     def _get_resnames(self):
 
         self.resnames=[residue.get_resname() for residue in self.residues]
     
-    def _extract_coords(self):
-        
-        self.centralCoords=[]
-        self.atomCoords=[]
-
-        for atom in self.atoms:
-            if atom.isAA and atom.isCentral:
-                self.centralCoords.append(atom.get_coord())
-
-            self.atomCoords.append(atom.get_coord())
-
-        self.centralCoords=np.array(self.centralCoords, dtype=np.float32)
-        self.atomCoords=np.array(self.atomCoords, dtype=np.float32)
-
     def _build_box(self, residue):
-
-        ## Give the function a residue to build the box about
 
         # Obtain coordinate projection of all atom objects about a standard position based on the parent residue
         projectedAtoms=box.get_boxProjection(residue, self.atoms)
 
-        origin=(0,0,0) # Origin is zero for every *projected* box
+        # Origin is zero for every projected box
+        origin=(0,0,0)
 
         # Get the indices of all atoms contained within the box
         foundAtomIndices=box.buildBox(origin, projectedAtoms, self.boxSize)
@@ -158,19 +154,21 @@ class proteinBox:
         boxArray=np.zeros((self.output.shape[1:]), dtype=int) 
 
         for i in foundAtomIndices:
-            atom=self.atoms[i]
-            voxelIndex, voxelCoords=box.get_closestVoxel(projectedCoords[i], self.voxels)
             
+            atom=self.atoms[i]
+             
             try:
-                typeHeavyAtomIndex=self.atomTypeDict[atom.atomType]
+                atomTypeIndex=self.atomTypeDict[atom.atomType]
             except:
                 continue
-
+ 
+            voxelIndex, voxelCoords=box.get_closestVoxel(projectedCoords[i], self.voxels)
+            
             if atom.isAA and atom.residueIndex==residueIndex:
-                boxArray[voxelIndex][typeHeavyAtomIndex]=-1
+                boxArray[voxelIndex][atomTypeIndex]=-1
 
             else:        
-                boxArray[voxelIndex][typeHeavyAtomIndex]=1
+                boxArray[voxelIndex][atomTypeIndex]=1
 
             return boxArray
 
