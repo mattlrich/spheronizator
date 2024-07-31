@@ -170,7 +170,7 @@ class proteinBox:
             else:        
                 boxArray[voxelIndex][atomTypeIndex]=1
 
-            return boxArray
+        return boxArray
 
     def _process_box_bonds(self, foundAtomIndices, residueIndex):
         
