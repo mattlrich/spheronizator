@@ -67,6 +67,14 @@ class proteinBox:
             # Build data for bond information
             self._process_box_bonds(foundAtomIndices, i)
                
+    def check_collision(self):
+
+        return np.any(self.output > 1)
+
+    def find_collisions(self):
+
+        return np.transpose(np.where(self.output > 1))
+    
     def _get_config(self, configPath=None):
 
         if configPath is None:
