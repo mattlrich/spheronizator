@@ -121,7 +121,8 @@ class proteinBox:
                 voxelArrayLength,               # Size of voxel array
                 voxelArrayLength,
                 voxelArrayLength,
-                len(self.atomTypeDict)          # Size of atomTypeDict representing the count of atom channels
+                len(self.atomTypeDict),         # Size of atomTypeDict representing the count of atom channels
+                2                               # Last dimension indicates whether or not atom belongs to the parent residue of the box
                 ), dtype=int)
 
         self.outputBonds=np.zeros((
@@ -169,10 +170,10 @@ class proteinBox:
             voxelIndex, voxelCoords=box.get_closestVoxel(projectedCoords[i], self.voxels)
             
             if atom.isAA and atom.residueIndex==residueIndex:
-                self.output[residueIndex][voxelIndex][atomTypeIndex]+=-1
+                self.output[residueIndex][voxelIndex][atomTypeIndex][0]+=1
 
             else:        
-                self.output[residueIndex][voxelIndex][atomTypeIndex]+=1
+                self.output[residueIndex][voxelIndex][atomTypeIndex][1]+=1
 
     def _process_box_bonds(self, foundAtomIndices, residueIndex):
         
