@@ -62,9 +62,7 @@ class proteinBox:
     
             # Build data for atom abscence / presence
             foundAtomIndices, projectedCoords=self._build_box(self.residues[i])
-            boxArray=self._process_box(foundAtomIndices, projectedCoords, i)
-            
-            self.output[i]+=boxArray
+            self._process_box(foundAtomIndices, projectedCoords, i)
 
             # Build data for bond information
             self._process_box_bonds(foundAtomIndices, i)
@@ -149,9 +147,7 @@ class proteinBox:
         else:
             self.voxels=box.get_voxels(self.boxSize, self.voxelSpacing)
 
-    def _process_box(self, foundAtomIndices, projectedCoords, residueIndex):
-        
-        boxArray=np.zeros((self.output.shape[1:]), dtype=int) 
+    def _process_box(self, foundAtomIndices, projectedCoords, residueIndex):  
 
         for i in foundAtomIndices:
             
@@ -165,12 +161,10 @@ class proteinBox:
             voxelIndex, voxelCoords=box.get_closestVoxel(projectedCoords[i], self.voxels)
             
             if atom.isAA and atom.residueIndex==residueIndex:
-                boxArray[voxelIndex][atomTypeIndex]+=-1
+                self.output[residueIndex][voxelIndex][atomTypeIndex]+=-1
 
             else:        
-                boxArray[voxelIndex][atomTypeIndex]+=1
-
-        return boxArray
+                self.output[residueIndex][voxelIndex][atomTypeIndex]+=1
 
     def _process_box_bonds(self, foundAtomIndices, residueIndex):
         
