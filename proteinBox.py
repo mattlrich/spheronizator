@@ -165,10 +165,10 @@ class proteinBox:
             voxelIndex, voxelCoords=box.get_closestVoxel(projectedCoords[i], self.voxels)
             
             if atom.isAA and atom.residueIndex==residueIndex:
-                boxArray[voxelIndex][atomTypeIndex]=-1
+                boxArray[voxelIndex][atomTypeIndex]+=-1
 
             else:        
-                boxArray[voxelIndex][atomTypeIndex]=1
+                boxArray[voxelIndex][atomTypeIndex]+=1
 
         return boxArray
 
