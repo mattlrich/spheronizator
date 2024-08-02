@@ -102,13 +102,15 @@ class proteinBox:
             self.config={
                         'boxSize':20,
                         'voxelSpacing':1,
-                        'useFloatVoxels':True
+                        'useFloatVoxels':True,
+                        'dataType':'bool'       # May also try 'uint8' if collisions need to be examined
                     }
 
         # Unpack values to attributes. This allows this values to be changed after initialization.
         self.boxSize            = int(  self.config['boxSize'])
         self.voxelSpacing       = int(  self.config['voxelSpacing'])
         self.useFloatVoxels     = bool( self.config['useFloatVoxels'])
+        self.dataType           =       self.config['dataType']
     
     def _init_arrays(self):
         
@@ -123,7 +125,7 @@ class proteinBox:
                 voxelArrayLength,
                 len(self.atomTypeDict),         # Size of atomTypeDict representing the count of atom channels
                 2                               # Last dimension indicates whether or not atom belongs to the parent residue of the box
-                ), dtype=int)
+                ), dtype=self.dataType)
 
         self.outputBonds=np.zeros((
                 residueCount,
@@ -168,11 +170,10 @@ class proteinBox:
                 continue
  
             voxelIndex, voxelCoords=box.get_closestVoxel(projectedCoords[i], self.voxels)
-            
-            if atom.isAA and atom.residueIndex==residueIndex:
-                self.output[residueIndex][voxelIndex][atomTypeIndex][0]+=1
 
-            else:        
+            self.output[residueIndex][voxelIndex][atomTypeIndex][0]+=1
+
+            if atom.isAA and atom.residueIndex==residueIndex:
                 self.output[residueIndex][voxelIndex][atomTypeIndex][1]+=1
 
     def _process_box_bonds(self, foundAtomIndices, residueIndex):
