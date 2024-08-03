@@ -4,6 +4,7 @@ import boxFunctions as box
 import numpy as np
 import re
 from mol2parser import mol2parser
+import warnings
 
 class proteinBox:
 
@@ -103,7 +104,8 @@ class proteinBox:
                         'boxSize':20,
                         'voxelSpacing':1,
                         'useFloatVoxels':True,
-                        'dataType':'bool'       # May also try 'uint8' if collisions need to be examined
+                        'dataType':'bool',
+                        'useWarnings':True
                     }
 
         # Unpack values to attributes. This allows this values to be changed after initialization.
@@ -111,6 +113,7 @@ class proteinBox:
         self.voxelSpacing       = int(  self.config['voxelSpacing'])
         self.useFloatVoxels     = bool( self.config['useFloatVoxels'])
         self.dataType           =       self.config['dataType']
+        self.useWarnings        = bool( self.config['useWarnings'])
     
     def _init_arrays(self):
         
@@ -171,6 +174,10 @@ class proteinBox:
  
             voxelIndex, voxelCoords=box.get_closestVoxel(projectedCoords[i], self.voxels)
 
+            if self.useWarnings and self.output[residueIndex][voxelIndex][atomTypeIndex][0]:
+                voxelStr=str(voxelIndex).strip(r"()")
+                print(f"Warning: Atom collision at index ({residueIndex}, {voxelStr}, {atomTypeIndex}) by atom with index {i}.")
+            
             self.output[residueIndex][voxelIndex][atomTypeIndex][0]+=1
 
             if atom.isAA and atom.residueIndex==residueIndex:
@@ -220,6 +227,4 @@ class proteinBox:
             io.set_structure(self.structure)
             io.save(filename_out,boxSelect())
             print(filename_out)
-
-
 
