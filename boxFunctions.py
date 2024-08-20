@@ -105,7 +105,8 @@ def get_voxels(boxSize=20,spacing=1):
 
 def get_floatVoxels(boxSize=20,spacing=1):
 
-    if not np.isclose(np.mod(boxSize, spacing), 0, 1e-9):
+    if not (np.isclose(np.mod(boxSize, spacing), 0, 1e-9) or
+            np.isclose(np.mod(boxSize, spacing), spacing, 1e-9)):
         raise ValueError("spacing does not divide boxSize!")
 
     steps=np.rint(np.divide(boxSize, spacing) + 1).astype(int)
