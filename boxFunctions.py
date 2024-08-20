@@ -212,9 +212,10 @@ def get_boxProjection(residue,atoms):
         
     return projectedCoordinates
 
-def buildBox(boxOrigin, atomCoords, boxSize=20):
-    # bitshift the boxsize (divide by 2) and store delta as integer value
-    delta=np.intc(boxSize>>1)
+def buildBox(atomCoords, boxSize=20):
+
+    delta=np.divide(boxSize, 2)
+    boxOrigin=(0,0,0)
 
     # Get our scanning range for the algorithm from the origin point
     # We want to avoid recomputing this range every iteration because it is constant
@@ -234,6 +235,11 @@ def buildBox(boxOrigin, atomCoords, boxSize=20):
 
     return foundAtoms
 
-def get_sphereProjection(residue,atoms):
-    pass
+def buildSphere(atomCoords, boxSize=20):
+    
+    radius=np.divide(boxSize, 2)
+    computedDistances=np.linalg.norm(atomCoords, axis=-1)
+    foundAtomIndices=np.where(computedDistances <= radius)[0]
+    
+    return foundAtomIndices
             

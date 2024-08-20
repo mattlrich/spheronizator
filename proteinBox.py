@@ -105,15 +105,17 @@ class proteinBox:
                         'voxelSpacing':1,
                         'useFloatVoxels':True,
                         'dataType':'bool',
-                        'useWarnings':True
+                        'useWarnings':True,
+                        'useSpheres':False
                     }
 
         # Unpack values to attributes. This allows this values to be changed after initialization.
         self.boxSize            = int(  self.config['boxSize'])
         self.voxelSpacing       = int(  self.config['voxelSpacing'])
-        self.useFloatVoxels     = bool( self.config['useFloatVoxels'])
+        self.useFloatVoxels     =       self.config['useFloatVoxels'].startswith('True')
         self.dataType           =       self.config['dataType']
-        self.useWarnings        = bool( self.config['useWarnings'])
+        self.useWarnings        =       self.config['useWarnings'].startswith('True')
+        self.useSpheres         =       self.config['useSpheres'].startswith('True')
     
     def _init_arrays(self):
         
@@ -144,11 +146,11 @@ class proteinBox:
         # Obtain coordinate projection of all atom objects about a standard position based on the parent residue
         projectedAtoms=box.get_boxProjection(residue, self.atoms)
 
-        # Origin is zero for every projected box
-        origin=(0,0,0)
-
         # Get the indices of all atoms contained within the box
-        foundAtomIndices=box.buildBox(origin, projectedAtoms, self.boxSize)
+        if self.useSpheres:
+            foundAtomIndices=box.buildSphere(projectedAtoms, self.boxSize)
+        else:
+            foundAtomIndices=box.buildBox(projectedAtoms, self.boxSize)
 
         return foundAtomIndices, projectedAtoms
                 

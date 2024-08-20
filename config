@@ -14,3 +14,6 @@ dataType=bool
 
 # Write warnings to standard output
 useWarnings=True
+
+# Use sphere generation method instead of boxes
+useSpheres=False
