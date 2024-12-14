@@ -105,6 +105,13 @@ def get_voxels(boxSize=20,spacing=1):
 
 def get_floatVoxels(boxSize=20,spacing=1):
 
+    '''
+    Return a 3D array of regularly spaced sample points to serve as voxels for our model. Function is able to output voxels as floats,
+    which enables the support of voxelSpacings less than 1. Supercedes above function, since calculations are all floating point anyways,
+    and there is no performance loss.
+
+    '''
+
     if not (np.isclose(np.mod(boxSize, spacing), 0, 1e-9) or
             np.isclose(np.mod(boxSize, spacing), spacing, 1e-9)):
         raise ValueError("spacing does not divide boxSize!")
