@@ -1,13 +1,13 @@
 ### Configuration File for new instances of proteinBox class
 
-# Size of each box
+# Size of each box (or Sphere)
 boxSize=20
 
 # Spaces between each voxel (angstroms)
 voxelSpacing=1
 
 # Enable support for float voxels
-useFloatVoxels=False
+useFloatVoxels=True
 
 # Numpy data type for box output array. If you need to examine collisions, try uint8 dtype.
 dataType=bool
@@ -16,4 +16,4 @@ dataType=bool
 useWarnings=True
 
 # Use sphere generation method instead of boxes
-useSpheres=False
+useSpheres=True
