@@ -1,12 +1,12 @@
 # Copyright (C) 2024 Matthew Richardson
 
-import boxFunctions as box
+from spheronizator import functions as box
+from spheronizator import mol2parser
 import numpy as np
 import re
-from mol2parser import mol2parser
 import warnings
 
-class proteinBox:
+class voxelBuilder:
 
     def __init__(self, config=None):
         
@@ -103,10 +103,10 @@ class proteinBox:
             self.config={
                         'boxSize':20,
                         'voxelSpacing':1,
-                        'useFloatVoxels':True,
+                        'useFloatVoxels':'True',
                         'dataType':'bool',
-                        'useWarnings':True,
-                        'useSpheres':False
+                        'useWarnings':'True',
+                        'useSpheres':'False'
                     }
 
         # Unpack values to attributes. This allows this values to be changed after initialization.

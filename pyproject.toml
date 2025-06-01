@@ -1,0 +1,21 @@
+[project]
+name = "spheronizator"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Matthew Richardson"}
+]
+license = {text = "BSD 3-Clause"}
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "biopython (>=1.81,<2.0)",
+    "numpy (>=1.25.1,<2.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "spheronizator", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
