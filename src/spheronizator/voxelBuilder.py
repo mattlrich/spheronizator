@@ -1,7 +1,7 @@
 # Copyright (C) 2024 Matthew Richardson
 
 from spheronizator import functions as box
-from spheronizator import mol2parser
+from spheronizator.mol2parser import mol2parser
 import numpy as np
 import re
 import warnings
