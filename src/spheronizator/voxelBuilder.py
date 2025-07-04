@@ -98,7 +98,6 @@ class voxelBuilder:
                 self.config=dict(config)
 
         except:
-            print("Configation file was unable to be parsed, applying defaults.")
 
             self.config={
                         'boxSize':20,
