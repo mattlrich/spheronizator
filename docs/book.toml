@@ -1,0 +1,7 @@
+[book]
+title = "Spheronizator Documentation"
+authors = ["Matthew Richardson"]
+language = "en"
+text-direction = "ltr"
+multilingual = false
+src = "src"
