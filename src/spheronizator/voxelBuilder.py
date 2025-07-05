@@ -34,7 +34,7 @@ class voxelBuilder:
 
     def reloadConfig(self, configPath=None):
         
-        self.get_config(configPath)
+        self._get_config(configPath)
 
     def parse(self, pdbfile, mol2file=None):
 
