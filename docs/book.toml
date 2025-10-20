@@ -5,3 +5,5 @@ language = "en"
 text-direction = "ltr"
 multilingual = false
 src = "src"
+
+[preprocessor.external-links]

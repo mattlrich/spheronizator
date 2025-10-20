@@ -6,4 +6,5 @@ build:
     rust: latest
   commands:
     - cargo install mdbook
+    - cargo install mdbook-external-links
     - mdbook build docs --dest-dir $READTHEDOCS_OUTPUT/html
