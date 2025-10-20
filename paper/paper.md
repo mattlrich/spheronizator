@@ -39,7 +39,7 @@ Spheronizator presently aims to incorporate features adapted from two open-sourc
 
 # Functionality
 
-\![A graphical description of spheronizator's processing steps.](figure.png)
+![A graphical description of spheronizator's processing steps.](figure.png)
 
 ## Parsing of Protein Data ##
 The project implements a hybrid mol2 and PDB parser extending upon [Biopython's](https://biopython.org/) PDB parsing capabilities to incorporate additional atom and bond information. The package reads and parses PDB files and constructs a hierarchical structure of chains, residues, and atoms, while distinguishing between standard amino acid residues and other molecular entities, such as ligands or solvent molecules, tagging each atom accordingly. The parser then reads and parses the corresponding mol2 file to update the information associated with each atom to include:
