@@ -19,4 +19,4 @@
 -----------
 [Contributors](contributors.md)
 [Research Associated with Spheronizator](research.md)
-[GitHub Project](https://github.com/mattlrich/spheronizator/)
+[Project Links](links.md)
