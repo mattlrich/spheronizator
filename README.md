@@ -31,6 +31,24 @@ You can build the source and wheels archives with:
 
 ```poetry build```
 
+## Alternative Installation (via Conda)
+
+If you prefer using **Conda** instead of Poetry or pip, you can install Spheronizator using a Conda environment.
+
+```bash
+# 1. clone the repository:
+git clone git@github.com:Dias-Lab/spheronizator.git
+cd EquilibraTor
+
+# 2. create conda environment using yaml file and activate it. Use mamba instead of conda for faster installation:
+   # with conda:
+   conda env create -f spheronizator_env.yml
+   conda activate spheronizator
+
+# 3. install the python package
+pip install -e .
+```
+
 ## Bugs and Issues
 If you encounter any issues with the package, please report them through the [GitHub Issue Tracker](https://github.com/mattlrich/spheronizator/issues).
 
