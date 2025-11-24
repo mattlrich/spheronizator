@@ -38,7 +38,7 @@ If you prefer using **Conda** instead of Poetry or pip, you can install Spheroni
 ```bash
 # 1. clone the repository:
 git clone git@github.com:Dias-Lab/spheronizator.git
-cd EquilibraTor
+cd spheronizator
 
 # 2. create conda environment using yaml file and activate it. Use mamba instead of conda for faster installation:
    # with conda:
