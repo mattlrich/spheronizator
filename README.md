@@ -56,7 +56,10 @@ If you encounter any issues with the package, please report them through the [Gi
 The project is happy to accept contibutions and enhancements. All contributions are to be made through GitHub pull requests. See [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
 ## Contact
-Matthew Richardson (richardson.m AT ufl DOT edu)
+Matthew Richardson (richardson.m@ufl.edu)
+Jose Cleydson (jferreiradasilva@ufl.edu)
+Jose Cediel-Becerra (jcedielbecerra@ufl.edu)
+Raquel Dias (raquel.dias@ufl.edu)
 
 ## License
 Spheronizator is licensed under the [BSD 3-Clause License](https://choosealicense.com/licenses/bsd-3-clause/). Please see [LICENSE](LICENSE) for more information.
