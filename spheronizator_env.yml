@@ -1,4 +1,4 @@
-name: spheronizator
+name: spheronizator_RD
 channels:
   - conda-forge
   - bioconda
@@ -10,3 +10,5 @@ dependencies:
   - openbabel
   - biopython>=1.81,<1.86
   - pip
+  - matplotlib
+  - pandas
