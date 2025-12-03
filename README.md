@@ -1,6 +1,8 @@
 # Spheronizator
 Spheronizator is a Python research utility designed to voxelize protein structural data from existing PDB and mol2 files for use in machine learning training sets. The utility is intended to be a part of your data processing pipeline, with an interface that is convenient to use with [IPython](https://ipython.org/), [Jupyter](https://jupyter.org/), or similar. Please see the [detailed documentation](https://spheronizator.readthedocs.io/) for more information, usage, and examples.
 
+<img src="workflow/spheronizator_workflow.png">
+
 ## Documentation
 Detailed documentation for the project can be found here:
 [https://spheronizator.readthedocs.io/](https://spheronizator.readthedocs.io/)
