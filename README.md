@@ -33,7 +33,7 @@ You can build the source and wheels archives with:
 
 ```poetry build```
 
-## Alternative Installation (via Conda)
+## Recommended Installation (via Conda)
 
 If you prefer using **Conda** instead of Poetry or pip, you can install Spheronizator using a Conda environment.
 
@@ -56,7 +56,8 @@ To show SpheronizaTor arguments:
 
 ```text
 voxelize -h
-
+```
+```
 usage: voxelize [-h] [--voxel_spacing VOXEL_SPACING] [--use_float_voxels USE_FLOAT_VOXELS] [--box_size BOX_SIZE] [--use_spheres USE_SPHERES]
                 [--data_type DATA_TYPE] [--overwrite] [--atom_out_dir ATOM_OUT_DIR] [--bond_out_dir BOND_OUT_DIR] [--meta_out_dir META_OUT_DIR]
                 pdb_file
