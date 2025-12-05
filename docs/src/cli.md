@@ -1,3 +1,12 @@
+# Command Line Interface
+
+Spheronizator now includes a command line interface contributed by Dr. Raquel Dias and José Cediel-Becerra.
+
+The command line interface allows generation of static data files from provided PDB files.
+
+## Usage
+
+The command line interface can be invoked by running the following command:
 ```text
 voxelize -h
 ```
@@ -31,15 +40,16 @@ options:
                         Directory for metadata outputs (default: ./metadata)
 ```
 
-To run SpheronizaTor for a protein file:
+### Examples
 
+To run Spheronizator on a protein file:
 ```text
 voxelize tests/sampledata/1YU6_A.pdb
 ```
 
 ## Outputs
 
-The pipeline produces three main directories:
+The utility produces three main directories:
 
 - **`metadata/`**  
   Contains a `.tsv` file summarizing the metadata for each residue, including:

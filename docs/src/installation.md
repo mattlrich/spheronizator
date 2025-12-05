@@ -17,6 +17,27 @@ Spheronizator is available in [PyPI](https://pypi.org/) and can easily be instal
 pip install spheronizator
 ```
 
+### Using a Conda Environment
+If you prefer to install the package into a Conda environment, you can use configuration from the repository.
+
+First download the configuration:
+```
+curl -L -o spheronizator_env.yml https://raw.githubusercontent.com/mattlrich/spheronizator/refs/heads/main/spheronizator_env.yml
+```
+
+Now create a Conda environment using the configuration:
+```
+conda env create -f spheronizator_env.yml
+```
+```
+conda activate spheronizator
+```
+
+You can now install the package into the environment with pip:
+```
+pip install spheronizator
+``` 
+
 ## Install Development Version from Source
 Spheronizator package management is handled by [Poetry](https://python-poetry.org/docs/), which also provides a convenient way to install the source into a virtual environment.
 

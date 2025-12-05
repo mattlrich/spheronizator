@@ -11,11 +11,6 @@
 # Reference Documentation
 - [class voxelBuilder](voxelBuilder.md)
 - [Configuration](configuration.md)
-
-# Technical Documentation
-- [Overview of Data Generation Procedure](overview.md)
-- [Construction of Coordinate Projection](projection.md)
-- [Output Arrays](output.md)
 	
 -----------
 [Contributors](contributors.md)

@@ -13,6 +13,6 @@ mol2 files are a less common format but can be generated automatically from exis
 
 With Open Babel, a PDB file can be converted to mol2 with the following command:
 ```
-obabel -ipdb -omol2 protein.pdb -o protein.mol2
+obabel -ipdb protein.pdb -omol2 -0 protein.mol2
 ```
 Please see the [Open Babel Documentation](https://openbabel.org/docs/) for more information.
