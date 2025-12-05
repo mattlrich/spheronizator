@@ -8,6 +8,8 @@ The utility is designed such that the number, type, and content of each extracte
 ## Basic Description of Methodology
 Spheronizator implements its methodology by representing the region around each residue with a rectangular voxel grid. Atoms within the region of space centered on the residue are mapped to this voxel grid, and features from each atom are used to update data associated with each voxel. An output array of the voxels for each residue in the protein is generated.
 
+![Figure 1](images/spheronizator_workflow.png)
+
 ## What it does
 - Implements a methodology for processing protein data.
 
