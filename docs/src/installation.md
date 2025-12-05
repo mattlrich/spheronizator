@@ -18,7 +18,7 @@ pip install spheronizator
 ```
 
 ### Using a Conda Environment
-If you prefer to install the package into a Conda environment, you can use configuration from the repository.
+If you prefer to install the package into a Conda environment, you can use the configuration from the repository.
 
 First download the configuration:
 ```
