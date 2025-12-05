@@ -4,5 +4,3 @@ authors = ["Matthew Richardson"]
 language = "en"
 text-direction = "ltr"
 src = "src"
-
-[preprocessor.external-links]
