@@ -10,41 +10,57 @@ Documentation for the project is written in Markdown, rendered to a static site 
 ## Installation
 The precompiled package is hosted on [PyPI](https://pypi.org/project/spheronizator/) and can be easily installed with pip:
 
-```pip install spheronizator``` 
+```
+pip install spheronizator
+``` 
 
 ### Using a Conda Environment
 If you prefer to install the package into a Conda environment, you can use configuration from the repository.
 
 First download the configuration:
-```curl -L -o spheronizator_env.yml https://raw.githubusercontent.com/mattlrich/spheronizator/refs/heads/main/spheronizator_env.yml```
+```
+curl -L -o spheronizator_env.yml https://raw.githubusercontent.com/mattlrich/spheronizator/refs/heads/main/spheronizator_env.yml
+```
 
 Now create a Conda environment using the configuration:
 ```
 conda env create -f spheronizator_env.yml
+```
+```
 conda activate spheronizator
 ```
 
 You can now install the package into the environment with pip:
-```pip install spheronizator``` 
+```
+pip install spheronizator
+``` 
 
 ## Development
 Packaging and building of the project is handled by [Poetry](https://python-poetry.org/docs/).
 
 To install the development version, first install Poetry:
 
-```pipx install poetry```
+```
+pipx install poetry
+```
 
 then clone the repository:
 
-```git clone git@github.com:mattlrich/spheronizator.git```
+```
+git clone git@github.com:mattlrich/spheronizator.git
+```
 
 then install the package in development mode to a virtual environment:
 
-```poetry install```
+```
+poetry install
+```
 
 You can build the source and wheels archives with:
 
-```poetry build```
+```
+poetry build
+```
 
 ## Bugs and Issues
 If you encounter any issues with the package, please report them through the [GitHub Issue Tracker](https://github.com/mattlrich/spheronizator/issues).
