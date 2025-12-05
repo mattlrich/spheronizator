@@ -2,7 +2,7 @@
 
 Spheronizator now includes a command line interface contributed by Dr. Raquel Dias and José Cediel-Becerra.
 
-The command line interface allows generation of static data files from provided PDB files.
+The command line interface allows generation of static data files from provided PDB files. It requires that [Open Babel](https://openbabel.org/) is installed. You may wish to install Spheronizator into a Conda environment to facilitate the installation of Open Babel.
 
 ## Usage
 
