@@ -5,6 +5,7 @@
 # User Guide
 - [Installation](installation.md)
 - [Getting Started](getting-started.md)
+- [Command Line Interface](cli.md)
 - [Data Files](data.md)
 
 # Reference Documentation

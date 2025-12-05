@@ -1,0 +1,14 @@
+name: spheronizator
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+
+dependencies:
+  - python>=3.10
+  - numpy>=1.26.4,<2.0
+  - openbabel
+  - biopython>=1.81,<1.86
+  - pip
+  - matplotlib
+  - pandas
