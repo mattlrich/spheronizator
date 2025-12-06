@@ -4,7 +4,7 @@ Spheronizator is a Python research utility designed to voxelize protein structur
 ## Documentation
 Detailed documentation for the project can be found [here](https://dias-lab.github.io/spheronizator/).
 
-Documentation for the project is written in Markdown, rendered to a static site with [mdBook](https://rust-lang.github.io/mdBook/) from a [Github Workflow](https://github.com/Dias-Lab/spheronizator/actions), and hosted directly on Github Pages from this repository. The documentation may also be browsed [locally](docs/src/SUMMARY.md) from the repository.
+Documentation for the project is written in Markdown, rendered to a static site with [mdBook](https://rust-lang.github.io/mdBook/) from a [Github Workflow](https://github.com/Dias-Lab/spheronizator/actions), and hosted directly on Github Pages from this repository. The documentation may also be [browsed locally](docs/src/SUMMARY.md) from the repository.
 
 ## Installation
 The precompiled package is hosted on [PyPI](https://pypi.org/project/spheronizator/) and can be easily installed with pip:
