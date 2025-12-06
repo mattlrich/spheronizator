@@ -22,7 +22,7 @@ If you prefer to install the package into a Conda environment, you can use the c
 
 First download the configuration:
 ```
-curl -L -o spheronizator_env.yml https://raw.githubusercontent.com/mattlrich/spheronizator/refs/heads/main/spheronizator_env.yml
+curl -L -o spheronizator_env.yml https://raw.githubusercontent.com/dias-lab/spheronizator/refs/heads/main/spheronizator_env.yml
 ```
 
 Now create a Conda environment using the configuration:
@@ -50,7 +50,7 @@ pipx install poetry
 then clone the repository:
 
 ```
-git clone git@github.com:mattlrich/spheronizator.git
+git clone git@github.com:dias-lab/spheronizator.git
 ```
 
 then install the package in development mode to a virtual environment:

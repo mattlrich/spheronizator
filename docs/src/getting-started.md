@@ -1,7 +1,7 @@
 # Getting Started
 Using the package should be straightforward as the interface is designed to fit comfortbly into the typical workflow in the field using the IPython interpreter, either standalone or in Jupyter.
 
-A Jupyter notebook with the following example can be found [here](https://github.com/mattlrich/spheronizator/blob/main/examples/demo.ipynb).
+A Jupyter notebook with the following example can be found [here](https://github.com/dias-lab/spheronizator/blob/main/examples/demo.ipynb).
 
 ## Importing
 First import the package:
